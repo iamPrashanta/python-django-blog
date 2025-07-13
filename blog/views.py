@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post
 from .forms import PostForm
 from django.http import HttpResponse
+from rest_framework import generics
+from .serializers import PostSerializer
 
 # def home(request):
     # return HttpResponse("Welcome to the Blog!")
@@ -36,3 +38,14 @@ def delete_post(request, id):
     post = get_object_or_404(Post, id=id)
     post.delete()
     return redirect('home')
+
+
+
+
+class PostListCreateAPI(generics.ListCreateAPIView):
+    queryset = Post.objects.all().order_by('-published_at')
+    serializer_class = PostSerializer
+
+class PostRetrieveUpdateDeleteAPI(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
